@@ -176,6 +176,19 @@ Licensed under the MIT license
 				//define total reading time in seconds
 				totalReadingTimeSeconds = totalWords / wordsPerSecond;
 
+				//sum durables tags
+				for(var t of ["audio", "video"]){
+		        for(var d of document.getElementsByTagName(t)){
+		            durations.push(d.duration);
+		        }
+		    }
+
+		    var durationTimeSeconds = durations.reduce(function (a, b) {
+		        return a + b;
+		    }, 0);
+
+				totalReadingTimeSeconds += durationTimeSeconds;
+
 				//define reading time in minutes
 				//if s.round is set to true
 				if(s.round === true) {
