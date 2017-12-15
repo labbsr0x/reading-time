@@ -22,9 +22,9 @@ Licensed under the MIT license
 	        wordsPerMinute: 270,
 	        round: true,
 	        lang: 'en',
-			lessThanAMinuteString: '',
-			prependTimeString: '',
-			prependWordString: '',
+					lessThanAMinuteString: '',
+					prependTimeString: '',
+					prependWordString: '',
 	        remotePath: null,
 	        remoteTarget: null,
 	        success: function() {},
@@ -163,9 +163,18 @@ Licensed under the MIT license
 
         }
 
-        var setTime = function(text) {
+        var setTime = function(el) {
 
-        	if(text !== '') {
+				var totalReadingTimeSeconds = 0;
+
+				//sum durables tags
+				el.find('video, audio').each(function (index, item){
+					totalReadingTimeSeconds += item.duration;
+				});
+
+				var text = el.text();
+
+        if(text !== '') {
 
 		        //split text by spaces to define total words
 				var totalWords = text.trim().split(/\s+/g).length;
@@ -174,20 +183,7 @@ Licensed under the MIT license
 				var wordsPerSecond = s.wordsPerMinute / 60;
 
 				//define total reading time in seconds
-				totalReadingTimeSeconds = totalWords / wordsPerSecond;
-
-				//sum durables tags
-				for(var t of ["audio", "video"]){
-		        for(var d of document.getElementsByTagName(t)){
-		            durations.push(d.duration);
-		        }
-		    }
-
-		    var durationTimeSeconds = durations.reduce(function (a, b) {
-		        return a + b;
-		    }, 0);
-
-				totalReadingTimeSeconds += durationTimeSeconds;
+				totalReadingTimeSeconds += totalWords / wordsPerSecond;
 
 				//define reading time in minutes
 				//if s.round is set to true
@@ -261,14 +257,14 @@ Licensed under the MIT license
 	    		$.get(s.remotePath, function(data) {
 
 					//set time using the remote target found in the remote file
-					setTime($('<div>').html(data).find(s.remoteTarget).text());
+					setTime($('<div>').html(data).find(s.remoteTarget));
 
 				});
 
 	        } else {
 
 		        //set time using the targeted element
-		        setTime(el.text());
+		        setTime(el);
 	        }
         });
 
